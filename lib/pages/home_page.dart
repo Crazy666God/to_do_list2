@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list2/service/task_service.dart';
 import 'package:to_do_list2/service/task.dart';
-import 'package:to_do_list2/widgets/state_icon.dart';
+import 'package:to_do_list2/widgets/style.dart';
 
 class HomePage extends StatefulWidget {
   final TaskService service;
 
-  HomePage(this.service, {Key? key}) : super(key: key);
+  const HomePage(this.service, {Key? key}) : super(key: key);
 
   @override
   _HomePage createState() => _HomePage();
@@ -16,11 +16,11 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: mainBackgroundColor(),
       appBar: AppBar(
         title: const Text('ToDoList'),
-        titleTextStyle: const TextStyle(
-            color: Colors.white, fontSize: 20.0, fontStyle: FontStyle.italic),
-        backgroundColor: Colors.black,
+        titleTextStyle: titleStyleAppBar(),
+        backgroundColor: backgroundColorAppBar(),
         centerTitle: true,
       ),
       floatingActionButton: buttonAdd(),
@@ -30,6 +30,7 @@ class _HomePage extends State<HomePage> {
 
   Widget buttonAdd() {
     return FloatingActionButton(
+      backgroundColor: Colors.orange[900],
       child: const Icon(Icons.add),
       onPressed: () async {
         await Navigator.pushNamed(context, '/page_add_task');
@@ -42,7 +43,7 @@ class _HomePage extends State<HomePage> {
 class TaskList extends StatefulWidget {
   final TaskService service;
 
-  TaskList(this.service, {Key? key}) : super(key: key);
+  const TaskList(this.service, {Key? key}) : super(key: key);
 
   @override
   _TaskList createState() => _TaskList();
@@ -82,53 +83,50 @@ class _TaskList extends State<TaskList> {
   }
 
   Widget taskDetals(Task task) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        width: double.infinity,
-        margin: const EdgeInsets.all(10.0),
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            GestureDetector(
+    return Container(
+      decoration: taskCardDesign(task.status),
+      width: double.infinity,
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          GestureDetector(
+            child: Container(
+              child: StateIcon(task.status),
+              padding: const EdgeInsets.all(5.0),
+              alignment: Alignment.center,
+            ),
+            onDoubleTap: toggleStatus(task.id),
+          ),
+          Expanded(
+            child: GestureDetector(
               child: Container(
-                child: StateIcon(task.status),
+                width: double.infinity,
                 padding: const EdgeInsets.all(5.0),
-                alignment: Alignment.center,
+                child: Text(
+                  task.title,
+                  textAlign: TextAlign.justify,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.fade,
+                ),
               ),
-              onDoubleTap: toggleStatus(task.id),
+              onTap: () {
+                setState(() {
+                  Navigator.pushNamed(
+                      context, '/task_detail_page/' + task.id.toString());
+                });
+              },
+              onLongPress: () async {
+                await Navigator.pushNamed(context, '/delete_task_page');
+                setState(() {});
+              },
             ),
-            Expanded(
-              child: GestureDetector(
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      task.title,
-                      textAlign: TextAlign.justify,
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.black,
-                      ),
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      Navigator.pushNamed(
-                          context, '/task_detail_page/' + task.id.toString());
-                    });
-                  },
-                  onLongPress:() async {
-                    await Navigator.pushNamed(context, '/delete_task_page');
-                    setState(() {});
-                  },
-                  ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -8,7 +8,7 @@ import 'package:to_do_list2/pages/delete_task_page.dart';
 class ToDoList extends StatelessWidget {
   ToDoList({Key? key}) : super(key: key);
 
-  final TaskService service = TaskService.test();
+  final TaskService service = TaskService();
 
   @override
   Widget build(BuildContext context) {

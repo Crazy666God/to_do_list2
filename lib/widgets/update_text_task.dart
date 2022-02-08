@@ -14,16 +14,23 @@ class UpdateTaskText extends StatefulWidget {
 class _UpdateTaskText extends State<UpdateTaskText> {
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: TextFormField(
-        decoration: const InputDecoration(border: InputBorder.none),
-        expands: true,
-        maxLines: null,
-        minLines: null,
-        initialValue: widget.service.getTextTask(widget.id),
-        onChanged: (value) {
-          widget.service.setTextTask(widget.id, value.toString());
-        },
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Form(
+        child: TextFormField(
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 20.0,
+          ),
+          decoration: const InputDecoration(border: InputBorder.none),
+          expands: true,
+          maxLines: null,
+          minLines: null,
+          initialValue: widget.service.getTextTask(widget.id),
+          onChanged: (value) {
+            widget.service.setTextTask(widget.id, value.toString());
+          },
+        ),
       ),
     );
   }

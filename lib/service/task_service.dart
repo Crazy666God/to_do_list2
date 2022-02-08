@@ -1,12 +1,11 @@
-import 'package:to_do_list2/pages/home_page.dart';
-
 import 'task.dart';
 
 class TaskService {
   final List<Task> _listTasks = [];
-  TaskService() {}
+  
+  TaskService(); //написать localstorage
 
-  TaskService.test() {
+/*  TaskService.test() {
     _listTasks.add(Task(
         'Task1 task1 task1task1taskq prigi gdsgdsg ds regk erjv krjbkb lkjsf rbk ;sjb ;kfd b s;dgkjnjdngjiengjne',
         'text1 text1'));
@@ -24,7 +23,7 @@ class TaskService {
     for (int i = 1; i <= 10; i += 2) {
       toggleStatus(i);
     }
-  }
+  }*/
 
   toJSONEncodable() {
     return _listTasks.map((task) {
@@ -79,26 +78,6 @@ class TaskService {
     }
   }
 
-  void deleteComplitedTasks() {
-    for (int i = 0; i < _listTasks.length; ++i) {
-      if (_listTasks[i].status) {
-        _listTasks.removeAt(i);
-        --i;
-      }
-    }
-
-    /*
-      List<Task> removeTasks = [];
-      for(Task task in tasks) {
-        if(task.status == true) {
-          removeTasks.add(task);
-        }
-      }
-      for(Task task in removeTasks) {
-        tasks.remove(task);
-      }*/
-  }
-
   String getTitleTask(int id) {
     String resul = '';
     for (Task task in _listTasks) {
@@ -149,14 +128,11 @@ class TaskService {
   }
 
   void deleteSelectTasks() {
-    List<Task> removeTasks = [];
-    for (Task task in _listTasks) {
-      if (task.flag) {
-        removeTasks.add(task);
+    for (int i = 0; i < _listTasks.length; ++i) {
+      if (_listTasks[i].flag) {
+        _listTasks.removeAt(i);
+        --i;
       }
-    }
-    for (Task task in removeTasks) {
-      _listTasks.remove(task);
     }
   }
 

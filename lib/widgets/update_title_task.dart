@@ -17,7 +17,7 @@ class _UpdateTaskTitle extends State<UpdateTaskTitle> {
     return Form(
       child: TextFormField(
         style: const TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontSize: 20.0,
         ),
         decoration: const InputDecoration(border: InputBorder.none),
