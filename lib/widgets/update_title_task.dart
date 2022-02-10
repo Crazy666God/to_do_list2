@@ -14,8 +14,7 @@ class UpdateTaskTitle extends StatefulWidget {
 class _UpdateTaskTitle extends State<UpdateTaskTitle> {
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: TextFormField(
+    return SizedBox(width: double.infinity, child: TextFormField(
         style: const TextStyle(
           color: Colors.black,
           fontSize: 20.0,
@@ -24,8 +23,7 @@ class _UpdateTaskTitle extends State<UpdateTaskTitle> {
         initialValue: widget.service.getTitleTask(widget.id),
         onChanged: (value) {
           widget.service.setTitleTask(widget.id, value.toString());
-        },
-      ),
+        }, ),
     );
   }
 }

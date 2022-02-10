@@ -1,40 +1,31 @@
+import 'package:to_do_list2/service/localstorage.dart';
+
 import 'task.dart';
 
 class TaskService {
   final List<Task> _listTasks = [];
-  
-  TaskService(); //написать localstorage
+  final ServiceLocalStorage _serviceLocalStorage = ServiceLocalStorage();
 
-/*  TaskService.test() {
-    _listTasks.add(Task(
-        'Task1 task1 task1task1taskq prigi gdsgdsg ds regk erjv krjbkb lkjsf rbk ;sjb ;kfd b s;dgkjnjdngjiengjne',
-        'text1 text1'));
-    _listTasks.add(Task('task2', 'text2 text2 text2 text2 text2'));
-    _listTasks.add(Task('task3', 'text3 text3 text3 text3'));
-    _listTasks.add(Task('task4', 'text4 text4'));
-    _listTasks.add(Task('task5', 'text5 text5 text5 text5 text5 text5'));
-    _listTasks.add(Task('task6', 'text6 text6'));
-    _listTasks.add(Task('task7', 'text7 text7'));
-    _listTasks
-        .add(Task('task8', 'text8 text8 text8 text8 text8 text8 text8 text8'));
-    _listTasks.add(Task('task9', 'text9 text9'));
-    _listTasks.add(Task('task10', 'text10'));
-    _listTasks.add(Task('task11', 'text11'));
-    for (int i = 1; i <= 10; i += 2) {
-      toggleStatus(i);
+  TaskService();
+
+  void initialization() {
+    if (_serviceLocalStorage.initialization()) {
+      List<Task> list = _serviceLocalStorage.getList();
+      if (list.isNotEmpty) {
+        _listTasks.addAll(list);
+      }
     }
-  }*/
+  }
 
-  toJSONEncodable() {
-    return _listTasks.map((task) {
-      return task.toJSONEncodable();
-    }).toList();
+  Future<bool> storageReady() {
+    return _serviceLocalStorage.storageReady();
   }
 
   int add(String title, String text) {
     Task task = Task(title, text);
     final int id = task.id;
     _listTasks.add(task);
+    _serviceLocalStorage.saveStorage(_listTasks);
     return id;
   }
 
@@ -42,6 +33,7 @@ class TaskService {
     for (Task task in _listTasks) {
       if (task.id == id) {
         task.status = !task.status;
+        _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
     }
@@ -55,6 +47,7 @@ class TaskService {
     for (Task task in _listTasks) {
       if (task.id == id) {
         task.title = title;
+        _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
     }
@@ -64,6 +57,7 @@ class TaskService {
     for (Task task in _listTasks) {
       if (task.id == id) {
         task.text = text;
+        _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
     }
@@ -73,6 +67,7 @@ class TaskService {
     for (Task task in _listTasks) {
       if (task.id == id) {
         _listTasks.remove(task);
+        _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
     }
@@ -134,6 +129,7 @@ class TaskService {
         --i;
       }
     }
+    _serviceLocalStorage.saveStorage(_listTasks);
   }
 
   void selectAll() {

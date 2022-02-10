@@ -16,21 +16,19 @@ class _UpdateTaskText extends State<UpdateTaskText> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Form(
-        child: TextFormField(
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 20.0,
-          ),
-          decoration: const InputDecoration(border: InputBorder.none),
-          expands: true,
-          maxLines: null,
-          minLines: null,
-          initialValue: widget.service.getTextTask(widget.id),
-          onChanged: (value) {
-            widget.service.setTextTask(widget.id, value.toString());
-          },
+      child: TextFormField(
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 20.0,
         ),
+        decoration: const InputDecoration(border: InputBorder.none),
+        expands: true,
+        maxLines: null,
+        minLines: null,
+        initialValue: widget.service.getTextTask(widget.id),
+        onChanged: (value) {
+          widget.service.setTextTask(widget.id, value.toString());
+        },
       ),
     );
   }

@@ -50,6 +50,8 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskList extends State<TaskList> {
+  bool init = false;
+
   VoidCallback toggleStatus(int id) {
     return () => setState(() {
           widget.service.toggleStatus(id);
@@ -59,27 +61,35 @@ class _TaskList extends State<TaskList> {
   @override
   Widget build(BuildContext context) {
     List<Task> listTasks = widget.service.getList();
-    /*return FutureBuilder(
-      future: ,
+    return FutureBuilder(
+      future: widget.service.storageReady(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.data == null) {
-          return Container(
-            child: Text('Loading...'),
+          return const Center(
+            child: Text(
+              'Loading...',
+              style: TextStyle(fontSize: 20.0),
+            ),
           );
-        } else { */
-    return Scrollbar(
-      isAlwaysShown: true,
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        itemCount: listTasks.length,
-        padding: const EdgeInsets.only(bottom: 100.0),
-        itemBuilder: (_, index) => taskDetals(listTasks[index]),
-      ),
+        } else {
+          if (!init) {
+            widget.service.initialization();
+            listTasks = widget.service.getList();
+            init = !init;
+          }
+          return Scrollbar(
+            isAlwaysShown: true,
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: listTasks.length,
+              padding: const EdgeInsets.only(bottom: 100.0),
+              itemBuilder: (_, index) => taskDetals(listTasks[index]),
+            ),
+          );
+        }
+      },
     );
-    //    }
-    //     },
-    //   );
   }
 
   Widget taskDetals(Task task) {
@@ -87,22 +97,21 @@ class _TaskList extends State<TaskList> {
       decoration: taskCardDesign(task.status),
       width: double.infinity,
       margin: const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(right: 10.0),
       child: Row(
         children: [
           GestureDetector(
             child: Container(
-              child: StateIcon(task.status),
-              padding: const EdgeInsets.all(5.0),
+              child: StatusIcon(task.status),
+              padding: const EdgeInsets.all(15.0),
               alignment: Alignment.center,
             ),
             onDoubleTap: toggleStatus(task.id),
           ),
-          Expanded(
-            child: GestureDetector(
+          Expanded(child: GestureDetector(
               child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(5.0),
+                color: backgroundColorTask(task.status),
+                padding: const EdgeInsets.symmetric(vertical: 13.0),
                 child: Text(
                   task.title,
                   textAlign: TextAlign.justify,
@@ -114,17 +123,17 @@ class _TaskList extends State<TaskList> {
                 ),
               ),
               onTap: () {
-                setState(() {
-                  Navigator.pushNamed(
-                      context, '/task_detail_page/' + task.id.toString());
-                });
+                Future<void> future =  Navigator.pushNamed(
+                    context, '/task_detail_page/' + task.id.toString());
+                future.then((_) {setState(() {});});
+                
               },
-              onLongPress: () async {
-                await Navigator.pushNamed(context, '/delete_task_page');
-                setState(() {});
+              onLongPress: () {
+                Future<void> future = Navigator.pushNamed(context, '/delete_task_page');
+                future.then((_) {setState(() {});});
               },
             ),
-          ),
+          ), 
         ],
       ),
     );

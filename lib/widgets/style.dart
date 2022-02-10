@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 
-class StateIcon extends StatelessWidget {
+class StatusIcon extends StatelessWidget {
   final bool status;
   final double iconSize = 40.0;
 
-  const StateIcon(this.status, {Key? key}) : super(key: key);
+  const StatusIcon(this.status, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (status) {
-      return Icon(Icons.check_circle_outline_rounded,
-          color: Colors.cyan[900], size: iconSize);
-    }
-    return Icon(Icons.circle_outlined,
-        color: Colors.orange[900], size: iconSize);
+    return status
+        ? Icon(Icons.check_circle_outline_rounded,
+            color: Colors.cyan[900], size: iconSize)
+        : Icon(Icons.circle_outlined,
+            color: Colors.orange[900], size: iconSize);
   }
+}
+
+Color backgroundColorTask(bool status) {
+  return status ? const Color(0xFF00BFA5) : const Color(0xFFFFA000);
 }
 
 BoxDecoration taskCardDesign(bool status) {
@@ -42,7 +45,7 @@ TextStyle titleStyleAppBar() {
 }
 
 Color backgroundColorAppBar() {
-  return const Color(0xFF26A69A);  //Colors.teal[400]
+  return const Color(0xFF26A69A); //Colors.teal[400]
 }
 
 Color mainBackgroundColor() {

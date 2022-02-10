@@ -32,7 +32,7 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
     }
   }
 
-  confirmationDelete(BuildContext context) async {
+  Future<void> confirmationDelete(BuildContext context) async {
     bool result = await Navigator.push(
         context,
         PageRouteBuilder(
@@ -110,7 +110,7 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
       decoration: taskCardDesign(task.status),
       width: double.infinity,
       margin: const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(right: 10.0),
       child: GestureDetector(
         onTap: () {
           task.flag = !task.flag;
@@ -119,13 +119,13 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
         child: Row(
           children: [
             Container(
-              child: StateIcon(task.status),
-              padding: const EdgeInsets.all(5.0),
+              child: StatusIcon(task.status),
+              padding: const EdgeInsets.all(15.0),
               alignment: Alignment.center,
             ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(5.0),
+                color: backgroundColorTask(task.status),
                 child: Text(
                   task.title,
                   textAlign: TextAlign.justify,
@@ -135,6 +135,7 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
                   ),
                   overflow: TextOverflow.fade,
                 ),
+                padding: const EdgeInsets.symmetric(vertical: 13.0),
               ),
             ),
             Checkbox(

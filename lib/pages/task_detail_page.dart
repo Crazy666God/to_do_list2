@@ -28,14 +28,7 @@ class TaskDetailPage extends StatelessWidget {
         ),
       ),
       body:  UpdateTaskText(service, id),
-      backgroundColor: mainBackgroundColor(), /*
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(10.0),
-        color: mainBackgroundColor(),
-        child: UpdateTaskText(service, id),
-      ), */
-      
+      backgroundColor: mainBackgroundColor(),
     );
   }
 }

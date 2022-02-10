@@ -1,21 +1,24 @@
 class Task {
   static int globalId = 0;
   String title, text;
-  bool status = false;
+  bool status;
   late final int id;
   bool flag = false;
 
-  Task(this.title, this.text) {
+  Task(this.title, this.text, [this.status = false]) {
     ++globalId;
     id = globalId;
   }
+/*
+  Task.initialization(this.title, this.text, this.status) {
+    ++globalId;
+    id = globalId;
+  }*/
 
-  Task.initialization(this.title, this.text, this.status, this.id);
-
-  void initializationId(int id) {
-    globalId = id;
-  }
-
+  //void initializationId(int id) {
+    //globalId = id;
+  //}
+/*
   toJSONEncodable() {
     var map = <String, dynamic>{};
     map['title'] = title;
@@ -23,6 +26,6 @@ class Task {
     map['status'] = status;
     map['id'] = id;
     return map;
-  }
+  }*/
 
 }
