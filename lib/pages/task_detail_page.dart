@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list2/service/task_service.dart';
-import 'package:to_do_list2/widgets/update_text_task.dart';
-import 'package:to_do_list2/widgets/update_title_task.dart';
+import 'package:to_do_list2/widgets/text_input.dart';
 import 'package:to_do_list2/widgets/style.dart';
 
 class TaskDetailPage extends StatelessWidget {
@@ -15,7 +14,7 @@ class TaskDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: UpdateTaskTitle(service, id),
+        title: TextInput(service, id, thisIsTheTitle: true),
         backgroundColor: backgroundColorAppBar(),
         leading: ElevatedButton(
           style: ButtonStyle(
@@ -27,7 +26,7 @@ class TaskDetailPage extends StatelessWidget {
           },
         ),
       ),
-      body:  UpdateTaskText(service, id),
+      body:  TextInput(service, id, thisIsTheTitle: false,),
       backgroundColor: mainBackgroundColor(),
     );
   }

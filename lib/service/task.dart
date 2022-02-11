@@ -5,7 +5,7 @@ class Task {
   late final int id;
   bool flag = false;
 
-  Task(this.title, this.text, [this.status = false]) {
+  Task([this.title = '', this.text = '', this.status = false]) {
     ++globalId;
     id = globalId;
   }
