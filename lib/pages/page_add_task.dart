@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list2/service/task_service.dart';
+import 'package:to_do_list2/adapter_for_the_service.dart';
 import 'package:to_do_list2/widgets/text_input.dart';
 import 'package:to_do_list2/widgets/style.dart';
 
 class PageAddTask extends StatelessWidget {
-  final TaskService service;
-  late int id = service.add('', '');
-  
-  PageAddTask(this.service, {Key? key}) : super(key: key);
+  PageAddTask({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
+    AdapterForTheService adapter = AdapterForTheService();
+    int id = adapter.add('', '');
     return WillPopScope(
       onWillPop: () async {
-        service.deleteTask(id);
+        adapter.deleteTask(id);
         Navigator.pop(context);
         return false;
       },
@@ -26,7 +25,7 @@ class PageAddTask extends StatelessWidget {
                     (states) => backgroundColorAppBar())),
             child: const Icon(Icons.arrow_back),
             onPressed: () {
-              service.deleteTask(id);
+              adapter.deleteTask(id);
               Navigator.pop(context);
             },
           ),
@@ -41,9 +40,9 @@ class PageAddTask extends StatelessWidget {
               },
             ),
           ],
-          title: TextInput(service, id, thisIsTheTitle: true,),
+          title: TextInput(id, thisIsTheTitle: true,),
         ),
-        body: TextInput(service, id, thisIsTheTitle: false,),
+        body: TextInput(id, thisIsTheTitle: false,),
         backgroundColor: mainBackgroundColor(),
       ),
     );

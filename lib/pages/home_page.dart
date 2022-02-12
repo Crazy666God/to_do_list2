@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list2/service/task_service.dart';
 import 'package:to_do_list2/service/task.dart';
 import 'package:to_do_list2/widgets/style.dart';
+import 'package:to_do_list2/adapter_for_the_service.dart';
 
 class HomePage extends StatefulWidget {
-  final TaskService service;
-
-  const HomePage(this.service, {Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePage createState() => _HomePage();
@@ -24,7 +22,7 @@ class _HomePage extends State<HomePage> {
         centerTitle: true,
       ),
       floatingActionButton: buttonAdd(),
-      body: TaskList(widget.service),
+      body: TaskList(),
     );
   }
 
@@ -41,9 +39,7 @@ class _HomePage extends State<HomePage> {
 }
 
 class TaskList extends StatefulWidget {
-  final TaskService service;
-
-  const TaskList(this.service, {Key? key}) : super(key: key);
+  const TaskList({Key? key}) : super(key: key);
 
   @override
   _TaskList createState() => _TaskList();
@@ -51,18 +47,19 @@ class TaskList extends StatefulWidget {
 
 class _TaskList extends State<TaskList> {
   bool init = false;
+  AdapterForTheService adapter = AdapterForTheService();
 
   VoidCallback toggleStatus(int id) {
     return () => setState(() {
-          widget.service.toggleStatus(id);
+          adapter.toggleStatus(id);
         });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Task> listTasks = widget.service.getList();
+    List<Task> listTasks = adapter.getListTask();
     return FutureBuilder(
-      future: widget.service.storageReady(),
+      future: adapter.storageReady(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.data == null) {
           return const Center(
@@ -73,8 +70,8 @@ class _TaskList extends State<TaskList> {
           );
         } else {
           if (!init) {
-            widget.service.initialization();
-            listTasks = widget.service.getList();
+            adapter.initialization();
+            listTasks = adapter.getListTask();
             init = !init;
           }
           return Scrollbar(
@@ -126,7 +123,6 @@ class _TaskList extends State<TaskList> {
                 Future<void> future =  Navigator.pushNamed(
                     context, '/task_detail_page/' + task.id.toString());
                 future.then((_) {setState(() {});});
-                
               },
               onLongPress: () {
                 Future<void> future = Navigator.pushNamed(context, '/delete_task_page');
