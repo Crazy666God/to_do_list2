@@ -105,7 +105,7 @@ class TaskService {
     return counter;
   }
 
-  void selectCompletedTask() {
+  void selectCompletedTasks() {
     int counter = 0;
     for (Task task in _listTasks) {
       if (task.status && !task.flag) {

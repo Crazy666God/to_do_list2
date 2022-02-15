@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list2/service/task_service.dart';
+import 'package:to_do_list2/adapter_for_the_service.dart';
+
 
 class TextInput extends StatefulWidget {
-  final TaskService service;
   final int id;
   final bool thisIsTheTitle;
 
-  const TextInput(this.service, this.id, {required this.thisIsTheTitle, Key? key})
+  const TextInput(this.id, {required this.thisIsTheTitle, Key? key})
       : super(key: key);
 
   @override
@@ -14,6 +14,7 @@ class TextInput extends StatefulWidget {
 }
 
 class _TextInput extends State<TextInput> {
+  final AdapterForTheService adapter = AdapterForTheService();
   @override
   Widget build(BuildContext context) {
     if (widget.thisIsTheTitle) {
@@ -23,9 +24,9 @@ class _TextInput extends State<TextInput> {
           fontSize: 20.0,
         ),
         decoration: const InputDecoration(border: InputBorder.none),
-        initialValue: widget.service.getTitleTask(widget.id),
+        initialValue: adapter.getTitleTask(widget.id),
         onChanged: (value) {
-          widget.service.setTitleTask(widget.id, value.toString());
+          adapter.setTitleTask(widget.id, value.toString());
         },
       );
     }
@@ -40,9 +41,9 @@ class _TextInput extends State<TextInput> {
         expands: true,
         maxLines: null,
         minLines: null,
-        initialValue: widget.service.getTextTask(widget.id),
+        initialValue: adapter.getTextTask(widget.id),
         onChanged: (value) {
-          widget.service.setTextTask(widget.id, value.toString());
+          adapter.setTextTask(widget.id, value.toString());
         },
       ),
     );

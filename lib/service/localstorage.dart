@@ -23,7 +23,6 @@ class ServiceLocalStorage {
   }
 
   void saveStorage(List<Task> list) async {
-    //хотя надо попробывать ждать и не ждать
     await _storage.setItem('ListTask', listToJSONEncodable(list));
   }
 

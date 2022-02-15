@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list2/service/task_service.dart';
+import 'package:to_do_list2/adapter_for_the_service.dart';
 import 'package:to_do_list2/service/task.dart';
 import 'package:to_do_list2/widgets/style.dart';
 
 class DeleteTaskPage extends StatefulWidget {
-  final TaskService service;
-
-  const DeleteTaskPage(this.service, {Key? key}) : super(key: key);
+  const DeleteTaskPage({Key? key}) : super(key: key);
 
   @override
   _DeleteTaskPage createState() => _DeleteTaskPage();
 }
 
 class _DeleteTaskPage extends State<DeleteTaskPage> {
+  AdapterForTheService _adapter = AdapterForTheService();
   int _selectedIndex = 0;
 
   _onItemTap(int index) {
@@ -24,11 +23,11 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
 
   void serviceAction(int index, BuildContext context) {
     if (index == 0) {
-      widget.service.selectCompletedTask();
+      _adapter.selectCompletedTasks();
     } else if (index == 1) {
       confirmationDelete(context);
     } else if (index == 2) {
-      widget.service.selectAll();
+      _adapter.selectAll();
     }
   }
 
@@ -37,7 +36,7 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
         context,
         PageRouteBuilder(
             opaque: false,
-            pageBuilder: (BuildContext context, _, __) => Popup(widget.service),
+            pageBuilder: (BuildContext context, _, __) => Popup(),
             transitionsBuilder:
                 (___, Animation<double> animation, ____, Widget child) {
               return FadeTransition(
@@ -50,21 +49,21 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
             }));
 
     if (result == true) {
-      widget.service.deleteSelectTasks();
+      _adapter.deleteSelectTasks();
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Task> listTasks = widget.service.getList();
+    List<Task> listTasks = _adapter.getListTask();
     return Scaffold(
       appBar: AppBar(
         titleTextStyle: titleStyleAppBar(),
         centerTitle: true,
         backgroundColor: backgroundColorAppBar(),
         title: Text(
-          widget.service.getNumberSelectedItems().toString() + ' item selected',
+          _adapter.getNumberSelectedItems().toString() + ' item selected',
           style: const TextStyle(color: Colors.black),
         ),
         leading: ElevatedButton(
@@ -153,15 +152,14 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
 }
 
 class Popup extends StatelessWidget {
-  final TaskService service;
-
-  const Popup(this.service, {Key? key}) : super(key: key);
+  const Popup({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    AdapterForTheService _adapter = AdapterForTheService();
     return AlertDialog(
       title: Center(
-        child: getText(service.getNumberSelectedItems()),
+        child: getText(_adapter.getNumberSelectedItems()),
       ),
       titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20.0),
       backgroundColor: Colors.black,
