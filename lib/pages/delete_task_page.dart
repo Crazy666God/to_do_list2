@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list2/adapter_for_the_service.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_list2/service/task.dart';
+import 'package:to_do_list2/service/task_service.dart';
 import 'package:to_do_list2/widgets/style.dart';
 
 class DeleteTaskPage extends StatefulWidget {
@@ -11,7 +12,6 @@ class DeleteTaskPage extends StatefulWidget {
 }
 
 class _DeleteTaskPage extends State<DeleteTaskPage> {
-  AdapterForTheService _adapter = AdapterForTheService();
   int _selectedIndex = 0;
 
   _onItemTap(int index) {
@@ -22,16 +22,18 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
   }
 
   void serviceAction(int index, BuildContext context) {
+    var taskService = Provider.of<TaskService>(context, listen: false);
     if (index == 0) {
-      _adapter.selectCompletedTasks();
+      taskService.selectCompletedTasks();
     } else if (index == 1) {
       confirmationDelete(context);
     } else if (index == 2) {
-      _adapter.selectAll();
+      taskService.selectAll();
     }
   }
 
   Future<void> confirmationDelete(BuildContext context) async {
+    var taskService = Provider.of<TaskService>(context, listen: false);
     bool result = await Navigator.push(
         context,
         PageRouteBuilder(
@@ -49,21 +51,22 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
             }));
 
     if (result == true) {
-      _adapter.deleteSelectTasks();
+      taskService.deleteSelectTasks();
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Task> listTasks = _adapter.getListTask();
+    var taskService = Provider.of<TaskService>(context);
+    List<Task> listTasks = taskService.getListTask();
     return Scaffold(
       appBar: AppBar(
         titleTextStyle: titleStyleAppBar(),
         centerTitle: true,
         backgroundColor: backgroundColorAppBar(),
         title: Text(
-          _adapter.getNumberSelectedItems().toString() + ' item selected',
+          taskService.getNumberSelectedItems().toString() + ' item selected',
           style: const TextStyle(color: Colors.black),
         ),
         leading: ElevatedButton(
@@ -79,7 +82,7 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black,
-        backgroundColor: mainBackgroundColor(), //изменить цвет
+        backgroundColor: mainBackgroundColor(),
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.done_all_rounded), label: 'select completed'),
@@ -106,27 +109,27 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
 
   Widget taskDetals(Task task) {
     return Container(
-      decoration: taskCardDesign(task.status),
+      decoration: taskCardDesign(task.getStatus()),
       width: double.infinity,
       margin: const EdgeInsets.all(10.0),
       padding: const EdgeInsets.only(right: 10.0),
       child: GestureDetector(
         onTap: () {
-          task.flag = !task.flag;
+          task.toggleSelected();
           setState(() {});
         },
         child: Row(
           children: [
             Container(
-              child: StatusIcon(task.status),
+              child: StatusIcon(task.getStatus()),
               padding: const EdgeInsets.all(15.0),
               alignment: Alignment.center,
             ),
             Expanded(
               child: Container(
-                color: backgroundColorTask(task.status),
+                color: backgroundColorTask(task.getStatus()),
                 child: Text(
-                  task.title,
+                  task.getTitle(),
                   textAlign: TextAlign.justify,
                   style: const TextStyle(
                     fontSize: 20.0,
@@ -138,9 +141,9 @@ class _DeleteTaskPage extends State<DeleteTaskPage> {
               ),
             ),
             Checkbox(
-              value: task.flag,
+              value: task.getSelected(),
               onChanged: (bool? value) {
-                task.flag = value!;
+                task.toggleSelected();
                 setState(() {});
               },
             )
@@ -156,10 +159,10 @@ class Popup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AdapterForTheService _adapter = AdapterForTheService();
+    var taskService = Provider.of<TaskService>(context);
     return AlertDialog(
       title: Center(
-        child: getText(_adapter.getNumberSelectedItems()),
+        child: getText(taskService.getNumberSelectedItems()),
       ),
       titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20.0),
       backgroundColor: Colors.black,
