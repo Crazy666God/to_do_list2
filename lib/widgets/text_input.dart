@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list2/adapter_for_the_service.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list2/service/task_service.dart';
 
 
 class TextInput extends StatefulWidget {
@@ -14,9 +15,9 @@ class TextInput extends StatefulWidget {
 }
 
 class _TextInput extends State<TextInput> {
-  final AdapterForTheService adapter = AdapterForTheService();
   @override
   Widget build(BuildContext context) {
+    var taskService = Provider.of<TaskService>(context);
     if (widget.thisIsTheTitle) {
       return TextFormField(
         style: const TextStyle(
@@ -24,9 +25,9 @@ class _TextInput extends State<TextInput> {
           fontSize: 20.0,
         ),
         decoration: const InputDecoration(border: InputBorder.none),
-        initialValue: adapter.getTitleTask(widget.id),
+        initialValue: taskService.getTitleTask(widget.id),
         onChanged: (value) {
-          adapter.setTitleTask(widget.id, value.toString());
+          taskService.setTitleTask(widget.id, value.toString());
         },
       );
     }
@@ -41,9 +42,9 @@ class _TextInput extends State<TextInput> {
         expands: true,
         maxLines: null,
         minLines: null,
-        initialValue: adapter.getTextTask(widget.id),
+        initialValue: taskService.getTextTask(widget.id),
         onChanged: (value) {
-          adapter.setTextTask(widget.id, value.toString());
+          taskService.setTextTask(widget.id, value.toString());
         },
       ),
     );

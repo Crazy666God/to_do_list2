@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list2/service/task.dart';
+import 'package:to_do_list2/service/task_service.dart';
 import 'package:to_do_list2/widgets/style.dart';
-import 'package:to_do_list2/adapter_for_the_service.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -47,19 +48,13 @@ class TaskList extends StatefulWidget {
 
 class _TaskList extends State<TaskList> {
   bool init = false;
-  AdapterForTheService adapter = AdapterForTheService();
-
-  VoidCallback toggleStatus(int id) {
-    return () => setState(() {
-          adapter.toggleStatus(id);
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
-    List<Task> listTasks = adapter.getListTask();
+    var taskService = Provider.of<TaskService>(context);
+    List<Task> listTasks = taskService.getListTask();
     return FutureBuilder(
-      future: adapter.storageReady(),
+      future: taskService.storageReady(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.data == null) {
           return const Center(
@@ -70,8 +65,8 @@ class _TaskList extends State<TaskList> {
           );
         } else {
           if (!init) {
-            adapter.initialization();
-            listTasks = adapter.getListTask();
+            taskService.initialization();
+            listTasks = taskService.getListTask();
             init = !init;
           }
           return Scrollbar(
@@ -90,8 +85,9 @@ class _TaskList extends State<TaskList> {
   }
 
   Widget taskDetals(Task task) {
+    var taskService = Provider.of<TaskService>(context);
     return Container(
-      decoration: taskCardDesign(task.status),
+      decoration: taskCardDesign(task.getStatus()),
       width: double.infinity,
       margin: const EdgeInsets.all(10.0),
       padding: const EdgeInsets.only(right: 10.0),
@@ -99,18 +95,23 @@ class _TaskList extends State<TaskList> {
         children: [
           GestureDetector(
             child: Container(
-              child: StatusIcon(task.status),
+              child: StatusIcon(task.getStatus()),
               padding: const EdgeInsets.all(15.0),
               alignment: Alignment.center,
             ),
-            onDoubleTap: toggleStatus(task.id),
+            onDoubleTap: () {
+              setState(() {
+                taskService.toggleStatus(task.getId());
+              });
+            },
           ),
-          Expanded(child: GestureDetector(
+          Expanded(
+            child: GestureDetector(
               child: Container(
-                color: backgroundColorTask(task.status),
+                color: backgroundColorTask(task.getStatus()),
                 padding: const EdgeInsets.symmetric(vertical: 13.0),
                 child: Text(
-                  task.title,
+                  task.getTitle(),
                   textAlign: TextAlign.justify,
                   style: const TextStyle(
                     fontSize: 20.0,
@@ -120,16 +121,21 @@ class _TaskList extends State<TaskList> {
                 ),
               ),
               onTap: () {
-                Future<void> future =  Navigator.pushNamed(
-                    context, '/task_detail_page/' + task.id.toString());
-                future.then((_) {setState(() {});});
+                Future<void> future = Navigator.pushNamed(
+                    context, '/task_detail_page/' + task.getId().toString());
+                future.then((_) {
+                  setState(() {});
+                });
               },
               onLongPress: () {
-                Future<void> future = Navigator.pushNamed(context, '/delete_task_page');
-                future.then((_) {setState(() {});});
+                Future<void> future =
+                    Navigator.pushNamed(context, '/delete_task_page');
+                future.then((_) {
+                  setState(() {});
+                });
               },
             ),
-          ), 
+          ),
         ],
       ),
     );

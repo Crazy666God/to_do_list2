@@ -7,7 +7,6 @@ class ServiceLocalStorage {
 
   bool initialization() {
     var items = _storage.getItem('ListTask');
-
     if (items != null) {
       List<dynamic> ls = items as List;
       for (Map<String, dynamic> map in ls) {
@@ -18,11 +17,11 @@ class ServiceLocalStorage {
     return false;
   }
 
-  Future<bool> storageReady() {
-    return _storage.ready;
+  Future<bool> storageReady() async {
+    return await _storage.ready;
   }
 
-  void saveStorage(List<Task> list) async {
+  saveStorage(List<Task> list) async {
     await _storage.setItem('ListTask', listToJSONEncodable(list));
   }
 
@@ -34,9 +33,9 @@ class ServiceLocalStorage {
 
   Map<String, dynamic> taskToJSONEncodable(Task task) {
     Map<String, dynamic> map = {};
-    map['title'] = task.title;
-    map['text'] = task.text;
-    map['status'] = task.status;
+    map['title'] = task.getTitle();
+    map['text'] = task.getText();
+    map['status'] = task.getStatus();
     return map;
   }
 

@@ -1,12 +1,9 @@
 import 'package:to_do_list2/service/localstorage.dart';
-
 import 'task.dart';
 
 class TaskService {
   final List<Task> _listTasks = [];
   final ServiceLocalStorage _serviceLocalStorage = ServiceLocalStorage();
-
-  TaskService();
 
   void initialization() {
     if (_serviceLocalStorage.initialization()) {
@@ -23,7 +20,7 @@ class TaskService {
 
   int add(String title, String text) {
     Task task = Task(title, text);
-    final int id = task.id;
+    final int id = task.getId();
     _listTasks.add(task);
     _serviceLocalStorage.saveStorage(_listTasks);
     return id;
@@ -31,22 +28,22 @@ class TaskService {
 
   void toggleStatus(int id) {
     for (Task task in _listTasks) {
-      if (task.id == id) {
-        task.status = !task.status;
+      if (task.getId() == id) {
+        task.toggleStatus();
         _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
     }
   }
 
-  List<Task> getList() {
+  List<Task> getListTask() {
     return _listTasks;
   }
 
   void setTitleTask(int id, String title) {
     for (Task task in _listTasks) {
-      if (task.id == id) {
-        task.title = title;
+      if (task.getId() == id) {
+        task.setTitle(title);
         _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
@@ -55,8 +52,8 @@ class TaskService {
 
   void setTextTask(int id, String text) {
     for (Task task in _listTasks) {
-      if (task.id == id) {
-        task.text = text;
+      if (task.getId() == id) {
+        task.setText(text);
         _serviceLocalStorage.saveStorage(_listTasks);
         break;
       }
@@ -65,7 +62,7 @@ class TaskService {
 
   void deleteTask(int id) {
     for (Task task in _listTasks) {
-      if (task.id == id) {
+      if (task.getId() == id) {
         _listTasks.remove(task);
         _serviceLocalStorage.saveStorage(_listTasks);
         break;
@@ -76,8 +73,8 @@ class TaskService {
   String getTitleTask(int id) {
     String resul = '';
     for (Task task in _listTasks) {
-      if (task.id == id) {
-        resul = task.title;
+      if (task.getId() == id) {
+        resul = task.getTitle();
         return resul;
       }
     }
@@ -87,8 +84,8 @@ class TaskService {
   String getTextTask(int id) {
     String resul = '';
     for (Task task in _listTasks) {
-      if (task.id == id) {
-        resul = task.text;
+      if (task.getId() == id) {
+        resul = task.getText();
         return resul;
       }
     }
@@ -98,7 +95,7 @@ class TaskService {
   int getNumberSelectedItems() {
     int counter = 0;
     for (Task task in _listTasks) {
-      if (task.flag == true) {
+      if (task.getSelected() == true) {
         ++counter;
       }
     }
@@ -108,15 +105,15 @@ class TaskService {
   void selectCompletedTasks() {
     int counter = 0;
     for (Task task in _listTasks) {
-      if (task.status && !task.flag) {
-        task.flag = true;
+      if (task.getStatus() && !task.getSelected()) {
+        task.toggleSelected();
         ++counter;
       }
     }
     if (counter == 0) {
       for (Task task in _listTasks) {
-        if (task.status) {
-          task.flag = !task.flag;
+        if (task.getStatus()) {
+          task.toggleSelected();
         }
       }
     }
@@ -124,7 +121,7 @@ class TaskService {
 
   void deleteSelectTasks() {
     for (int i = 0; i < _listTasks.length; ++i) {
-      if (_listTasks[i].flag) {
+      if (_listTasks[i].getSelected()) {
         _listTasks.removeAt(i);
         --i;
       }
@@ -135,14 +132,14 @@ class TaskService {
   void selectAll() {
     int counter = 0;
     for (Task task in _listTasks) {
-      if (!task.flag) {
-        task.flag = true;
+      if (!task.getSelected()) {
+        task.toggleSelected();
         ++counter;
       }
     }
     if (counter == 0) {
       for (Task task in _listTasks) {
-        task.flag = !task.flag;
+        task.toggleSelected();
       }
     }
   }

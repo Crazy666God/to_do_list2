@@ -1,31 +1,32 @@
 class Task {
   static int globalId = 0;
-  String title, text;
-  bool status;
-  late final int id;
-  bool flag = false;
+  String _title, _text;
+  bool _status;
+  late final int _id;
+  bool _selected = false;
 
-  Task([this.title = '', this.text = '', this.status = false]) {
-    ++globalId;
-    id = globalId;
+  Task([this._title = '', this._text = '', this._status = false]) {
+    _id = ++globalId;
   }
-/*
-  Task.initialization(this.title, this.text, this.status) {
-    ++globalId;
-    id = globalId;
-  }*/
 
-  //void initializationId(int id) {
-    //globalId = id;
-  //}
-/*
-  toJSONEncodable() {
-    var map = <String, dynamic>{};
-    map['title'] = title;
-    map['text'] = text;
-    map['status'] = status;
-    map['id'] = id;
-    return map;
-  }*/
+  int getId() => _id; 
+  bool getStatus() => _status;
+  bool getSelected() => _selected;
+  String getTitle() => _title;
+  String getText() => _text;
 
+  void setTitle(String title) {
+    _title = title;
+  }
+  void setText(String text) {
+    _text = text;
+  }
+
+  void toggleStatus() {
+    _status = !_status;
+  }
+
+  void toggleSelected() {
+    _selected = !_selected;
+  }
 }
