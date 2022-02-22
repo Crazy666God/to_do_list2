@@ -1,5 +1,5 @@
 import 'package:localstorage/localstorage.dart';
-import 'package:to_do_list2/service/task.dart';
+import 'package:to_do_list2/tasks/task.dart';
 
 class ServiceLocalStorage {
   final LocalStorage _storage = LocalStorage('ToDoList');

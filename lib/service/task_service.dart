@@ -1,24 +1,45 @@
+import 'dart:async';
 import 'package:to_do_list2/service/localstorage.dart';
-import 'task.dart';
+import 'package:to_do_list2/tasks/task.dart';
 
 class TaskService {
   final List<Task> _listTasks = [];
   final ServiceLocalStorage _serviceLocalStorage = ServiceLocalStorage();
 
-  void initialization() {
+  TaskService() {
+    _controllerListTasks.sink.add(_listTasks);
+  }
+
+  final StreamController<List<Task>> _controllerListTasks =
+      StreamController<List<Task>>();
+
+  Stream<List<Task>> get streamListTask => _controllerListTasks.stream;
+  Stream<List<Task>> get streamListTasks => _streamListTasks;
+  late final Stream<List<Task>> _streamListTasks =
+      streamListTask.asBroadcastStream();
+
+  void updateStream() {
+    _controllerListTasks.sink.add(_listTasks);
+  }
+
+  void dispose() {
+    _controllerListTasks.close();
+  }
+
+  void initialization() async {
+    await _serviceLocalStorage.storageReady();
     if (_serviceLocalStorage.initialization()) {
       List<Task> list = _serviceLocalStorage.getList();
       if (list.isNotEmpty) {
-        _listTasks.addAll(list);
+        for (int i = 0; i < list.length; ++i) {
+          _listTasks.add(list[i]);
+        }
+        _controllerListTasks.sink.add(_listTasks);
       }
     }
   }
 
-  Future<bool> storageReady() {
-    return _serviceLocalStorage.storageReady();
-  }
-
-  int add(String title, String text) {
+  int addTask(String title, String text) {
     Task task = Task(title, text);
     final int id = task.getId();
     _listTasks.add(task);
@@ -31,13 +52,10 @@ class TaskService {
       if (task.getId() == id) {
         task.toggleStatus();
         _serviceLocalStorage.saveStorage(_listTasks);
+        updateStream();
         break;
       }
     }
-  }
-
-  List<Task> getListTask() {
-    return _listTasks;
   }
 
   void setTitleTask(int id, String title) {
@@ -82,65 +100,13 @@ class TaskService {
   }
 
   String getTextTask(int id) {
-    String resul = '';
+    String result = '';
     for (Task task in _listTasks) {
       if (task.getId() == id) {
-        resul = task.getText();
-        return resul;
+        result = task.getText();
+        return result;
       }
     }
-    return resul;
-  }
-
-  int getNumberSelectedItems() {
-    int counter = 0;
-    for (Task task in _listTasks) {
-      if (task.getSelected() == true) {
-        ++counter;
-      }
-    }
-    return counter;
-  }
-
-  void selectCompletedTasks() {
-    int counter = 0;
-    for (Task task in _listTasks) {
-      if (task.getStatus() && !task.getSelected()) {
-        task.toggleSelected();
-        ++counter;
-      }
-    }
-    if (counter == 0) {
-      for (Task task in _listTasks) {
-        if (task.getStatus()) {
-          task.toggleSelected();
-        }
-      }
-    }
-  }
-
-  void deleteSelectTasks() {
-    for (int i = 0; i < _listTasks.length; ++i) {
-      if (_listTasks[i].getSelected()) {
-        _listTasks.removeAt(i);
-        --i;
-      }
-    }
-    _serviceLocalStorage.saveStorage(_listTasks);
-  }
-
-  void selectAll() {
-    int counter = 0;
-    for (Task task in _listTasks) {
-      if (!task.getSelected()) {
-        task.toggleSelected();
-        ++counter;
-      }
-    }
-    if (counter == 0) {
-      for (Task task in _listTasks) {
-        task.toggleSelected();
-      }
-    }
+    return result;
   }
 }

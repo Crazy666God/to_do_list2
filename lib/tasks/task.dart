@@ -6,7 +6,8 @@ class Task {
   bool _selected = false;
 
   Task([this._title = '', this._text = '', this._status = false]) {
-    _id = ++globalId;
+    ++globalId;
+    _id = globalId;
   }
 
   int getId() => _id; 

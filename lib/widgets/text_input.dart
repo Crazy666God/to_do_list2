@@ -1,52 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list2/service/task_service.dart';
+import 'package:to_do_list2/tasks/task.dart';
+import 'package:to_do_list2/tasks/temporary_task.dart';
 
-
-class TextInput extends StatefulWidget {
-  final int id;
+class TextInput extends StatelessWidget {
+  final bool thisIsAddingATask;
+  final Task task;
   final bool thisIsTheTitle;
 
-  const TextInput(this.id, {required this.thisIsTheTitle, Key? key})
+  TextInput(this.task,
+      {this.thisIsTheTitle = false, required this.thisIsAddingATask, Key? key})
       : super(key: key);
-
-  @override
-  _TextInput createState() => _TextInput();
-}
-
-class _TextInput extends State<TextInput> {
   @override
   Widget build(BuildContext context) {
-    var taskService = Provider.of<TaskService>(context);
-    if (widget.thisIsTheTitle) {
-      return TextFormField(
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 20.0,
-        ),
+    TaskService taskService = Provider.of<TaskService>(context);
+    if (thisIsTheTitle) {
+      return Scrollbar(
+        scrollbarOrientation: ScrollbarOrientation.bottom,
+        child: 
+       TextFormField(
+        style: _textStyle(),
         decoration: const InputDecoration(border: InputBorder.none),
-        initialValue: taskService.getTitleTask(widget.id),
-        onChanged: (value) {
-          taskService.setTitleTask(widget.id, value.toString());
+        initialValue: task.getTitle(),
+        onChanged: (str) {
+          if (thisIsAddingATask) {
+            TemporaryTask().setTitleTemporaryTask(str);
+          }
+          taskService.setTitleTask(task.getId(), str);
+          taskService.updateStream();
         },
-      );
+      ),);
     }
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
+    return Scrollbar(
       child: TextFormField(
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 20.0,
-        ),
+        style: _textStyle(),
         decoration: const InputDecoration(border: InputBorder.none),
         expands: true,
-        maxLines: null,
         minLines: null,
-        initialValue: taskService.getTextTask(widget.id),
-        onChanged: (value) {
-          taskService.setTextTask(widget.id, value.toString());
+        maxLines: null,
+        initialValue: task.getText(),
+        onChanged: (str) {
+          if (thisIsAddingATask) {
+            TemporaryTask().setTextTemporaryTask(str);
+          }
+          taskService.setTextTask(task.getId(), str);
+          taskService.updateStream();
         },
       ),
+    );
+  }
+
+  TextStyle _textStyle() {
+    return const TextStyle(
+      color: Colors.black,
+      fontSize: 20.0,
     );
   }
 }

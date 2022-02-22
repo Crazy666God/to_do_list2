@@ -4,11 +4,12 @@ import 'package:to_do_list2/to_do_list.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  TaskService taskService = TaskService();
-
+  TaskService _taskService = TaskService();
   runApp(
-    Provider.value(
-      value: taskService,
+    MultiProvider(
+      providers: [
+        Provider<TaskService>.value(value: _taskService),
+      ],
       builder: (context, child) => ToDoList(),
     ),
   );
